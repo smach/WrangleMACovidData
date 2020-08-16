@@ -3,6 +3,8 @@
 
 #' Read weekly Mass Covid dashboard to join with shapefile for mapping
 #'
+#' See vignette("make-map", package = "WrangleMACovidData") for more info
+#'
 #' @param weekly_data_file Weekly Covid-19 spreadsheet from Mass Dept of Public Health
 #' @param gis_data sf object available in this package
 #'
@@ -11,7 +13,7 @@
 #'
 macovid_read_weekly_for_map <- function(weekly_data_file) {
   ma_data <- readxl::read_xlsx(weekly_data_file, sheet = "City_Town_Data")
-  gis_file <- system.file("extdata", "MA_census_population_shapefile/acs2018_5yr_B00001_06000US2502141515.shp", package = "WrangleMACovidData")
+  gis_file <- system.file("extdata", "MA_shapefile/acs2018_5yr_B00001_06000US2502141515.shp", package = "WrangleMACovidData")
   ma_data <- ma_data %>%
     dplyr::mutate(
       `Percent positivity` = suppressWarnings(readr::parse_number(`Percent positivity`) ),

@@ -15,5 +15,5 @@ macovid_read_weekly_for_map(weekly_data_file)
 sf object for use in making a Leaflet map
 }
 \description{
-Read weekly Mass Covid dashboard to join with shapefile for mapping
+See vignette("make-map", package = "WrangleMACovidData") for more info
 }

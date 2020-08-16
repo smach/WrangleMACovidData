@@ -2,6 +2,8 @@
 
 #' Generate a Leaflet map by community from MA weekly Covid-19 data
 #'
+#' See vignette("make-map", package = "WrangleMACovidData")
+#'
 #' @param the_map_data sf object created by macovid_read_weekly_for_map()
 #' @param the_fill_palette palette created by leaflet::colorFactor()
 #' @param the_labels HTML labels for popup
@@ -10,7 +12,6 @@
 #' @return leaflet object
 #' @export
 #'
-#' @examples
 generate_mass_covid_map_by_place <- function(the_map_data, the_fill_palette, the_labels, the_outline_color = "white") {
   the_map <- leaflet::leaflet(the_map_data) %>%
     leaflet::addPolygons(

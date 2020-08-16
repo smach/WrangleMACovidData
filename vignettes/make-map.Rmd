@@ -1,5 +1,5 @@
 ---
-title: "How to make a map"
+title: "How to make a map from Mass DPH weekly data"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{How to make a map}
@@ -14,8 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+```{r setup, echo=FALSE}
 library(WrangleMACovidData)
+# weekly_dashboard_file <- system.file("extdata", "Weekly-Dashboard-data-08122020.xlsx", package = "WrangleMACovidData")
 ```
 
 1) Download the latest weekly public health report spreadsheet of raw data from the [Massachusetts government website](https://www.mass.gov/info-details/covid-19-response-reporting#covid-19-weekly-public-health-report-).
@@ -30,7 +31,7 @@ ma_covid_data <- macovid_read_weekly_for_map("Weekly-Dashboard-data.xlsx")
 
 the_ma_covid_data should be the sf object you generated above. the_fill_palette needs to be a palette created by leaflet::colorFactor(). This package has two built-in color vectors for your use if desired: positivity_colors and case_colors.
 
-Here's an example to generate a map of test positivity in the last 14 days:
+Here's example code to generate a map of test positivity in the last 14 days:
 
 ```{r eval=FALSE}
 
@@ -48,10 +49,23 @@ positivity_map <- generate_mass_covid_map_by_place(ma_covid_data, positivity_fil
 ```
 
 
+And here is one for daily average cases per 100K in the last 14 days, attempting to mimic the DPH color scheme for mapping daily average cases by community in the past 14 days:
 
-And here is one for daily average cases per 100K in the last 14 days:
+
+```{r eval=FALSE}
+
+case_labels <- glue::glue("<strong>{ma_covid_data$Place}</strong><br/>Avg daily cases per 100K: {ma_covid_data$DailyAvgCases}<br />Positivity: {ma_covid_data$PositivityRate}%") %>% 
+  lapply(htmltools::HTML)
 
 
+case_palette <- leaflet::colorFactor(case_colors, levels = c("White", "Green", "Yellow", "Red"), ordered = TRUE)
+
+case_fill_color <- ~case_palette(ma_covid_data$CaseCategory)
+
+case_map <- generate_mass_covid_map_by_place(ma_covid_data, case_fill_color, case_labels, the_outline_color = "black")
+
+
+```
 
 
 

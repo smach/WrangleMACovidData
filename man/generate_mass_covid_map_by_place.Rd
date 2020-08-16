@@ -24,5 +24,5 @@ generate_mass_covid_map_by_place(
 leaflet object
 }
 \description{
-Generate a Leaflet map by community from MA weekly Covid-19 data
+See vignette("make-map", package = "WrangleMACovidData")
 }
