@@ -28,3 +28,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+URL: https://github.com/smach/WrangleMACovidData
+BugReports: https://github.com/smach/WrangleMACovidData/issues
