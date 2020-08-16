@@ -6,6 +6,7 @@ Author: Sharon Machlis
 Maintainer: Sharon Machlis <DoMoreWithR@machlis.com>
 Description: This package currently performs 1 task, generating interactive maps.
     It uses data from from Mass DPH Covid-19 spreadsheets.
+    Caution that Mass DPH changes data format somewhat frequently, which can break these functions.
 License: MPL-2.0
 Encoding: UTF-8
 LazyData: true
@@ -18,7 +19,8 @@ Imports:
     readr,
     glue,
     rlang,
-    magrittr
+    magrittr,
+    htmltools
 Depends: 
     R (>= 2.10)
 RoxygenNote: 7.1.1
