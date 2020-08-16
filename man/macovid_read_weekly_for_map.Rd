@@ -4,7 +4,7 @@
 \alias{macovid_read_weekly_for_map}
 \title{Read weekly Mass Covid dashboard to join with shapefile for mapping}
 \usage{
-macovid_read_weekly_for_map(weekly_data_file, gis_data = ma_geo)
+macovid_read_weekly_for_map(weekly_data_file)
 }
 \arguments{
 \item{weekly_data_file}{Weekly Covid-19 spreadsheet from Mass Dept of Public Health}

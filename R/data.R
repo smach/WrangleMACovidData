@@ -12,3 +12,19 @@
 #' }
 #' @source \url{https://censusreporter.org/data/table/?table=B00001&geo_ids=04000US25,160|04000US25&primary_geo_id=04000US25}
 "ma_geo"
+
+
+
+#' case_palette color palette for use with MA Covid cases per 100K
+#'
+#' Attempt to somewhat mimic Mass DPH color scheme
+#'
+#' @format A vector of colors
+
+
+#' positivity_palette leaflet palette for use with MA Covid test positivity rates
+#'
+#' @format A vector of colors
+#'
+#'
+

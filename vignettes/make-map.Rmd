@@ -1,0 +1,51 @@
+---
+title: "How to make a map"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{How to make a map}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(WrangleMACovidData)
+```
+
+1) Download the latest weekly public health report spreadsheet of raw data from the [Massachusetts government website](https://www.mass.gov/info-details/covid-19-response-reporting#covid-19-weekly-public-health-report-).
+
+2) Run the `macovid_read_weekly_for_map()` function on the downloaded spreadsheet, such as
+
+```{r eval=FALSE}
+ma_covid_data <- macovid_read_weekly_for_map("Weekly-Dashboard-data.xlsx")
+```
+
+3) Run the generate_mass_covid_map_by_place() function on the resulting sf object. That function has 4 arguments: the_ma_covid_data, the_fill_palette, the_labels, and the_outline_color (which defaults to "white").
+
+the_ma_covid_data should be the sf object you generated above. the_fill_palette needs to be a palette created by leaflet::colorFactor(). This package has two built-in palettes -- case_palette and positivity palette. the_labels is a 
+
+Here's an example for generating a map of test positivity in the last 14 days:
+
+```{r eval=FALSE}
+
+
+positivity_labels <- glue::glue("<strong>{ma_covid_data$Place}</strong><br/>Positivity: {ma_covid_data$PositivityRate}%<br />Avg daily cases per 100K: {ma_covid_data$DailyAvgCases}") %>% 
+  lapply(htmltools::HTML)
+
+
+positivity_palette <- leaflet::colorFactor(positivity_colors, levels = c("1.0 or Below", "Very Low", "Low", "Moderate", "Concern", "High", "Very High"), ordered = TRUE)
+
+positivity_fill_color <- ~positivity_palette(ma_covid_data$PositivityCategory)
+
+positivity_map <- generate_mass_covid_map_by_place(ma_covid_data, positivity_fill_color, positivity_labels)
+
+```
+
+
+
