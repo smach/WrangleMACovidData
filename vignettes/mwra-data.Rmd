@@ -1,0 +1,30 @@
+---
+title: "Import and Graph MWRA Covid-19 Test Data"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Import and Graph MWRA Covid-19 Test Data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(WrangleMACovidData)
+```
+
+This package has two functions for working with MWRA Covid-19 wastewater testing data. You can find the latest test data and more info about the testing program at the [Massachusetts Water Resources Authority Web site](http://www.mwra.com/biobot/biobotdata.htm).
+
+The data is currently only downloadable as a PDF. You can convert it to a .xlsx spreadsheet file first or have this package do it for you.
+
+Running the function `my_results <- import_mwra_sewage_data("my_data_file.PDF")` will convert the file and wrangle it for use in ggplot2. If you already have an xlsx file, run `my_results <- import_mwra_sewage_data("my_data_file.xlsx")` and the function will know not to run the PDF-to-Excel conversion.
+
+The function returns a list with one or more data frames, depending on whether the data includes just daily samples by region (North and South) or also averages of the last 3 samples and/or last 7 samples. The results also include a vector called sample_groups detailing which data sets are in the results.
+
+Run `graph_sewage_data(my_results[["eachsample]])` to graph results by each sample, `graph_sewage_data(my_results[["3sample"]])` for the 3-sample average, etc. 
+

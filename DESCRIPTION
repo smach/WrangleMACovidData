@@ -29,7 +29,8 @@ RoxygenNote: 7.1.1
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    pdftables
 VignetteBuilder: knitr
 URL: https://github.com/smach/WrangleMACovidData
 BugReports: https://github.com/smach/WrangleMACovidData/issues

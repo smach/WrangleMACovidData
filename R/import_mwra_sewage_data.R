@@ -2,59 +2,56 @@
 
 #' Import MWRA sewage Covid-19 test data
 #'
-#' Data from http://www.mwra.com/biobot/biobotdata.htm. See mwra-data vignette for details. Default uses pdftables API (not free).
+#' Data from http://www.mwra.com/biobot/biobotdata.htm. See mwra-data vignette for details. Auto conversion of PDF to .xlsx uses the pdftables API (not free).
 #'
-#' @param mwra_sewage_pdf character string name of PDF downloaded from MWRA, or "none" if you are converting it to .xlsx another way.
-#' @param covid_wastewater_file character string name of Excel file with data, either desired file to create or existing file.
-#' @param latest_rda_file character string name of R data file where you'd like to save results
+#' @param mwra_sewage_file character string name of PDF downloaded from MWRA, or Excel spreadsheet if you already converted the PDF to .xlsx another way.
 #' @param api_key pdftables API key if using. See https://pdftables.com/pdf-to-excel-api for more details
 #'
-#' @return List with 2 tibbles: Sewage test results by sample and by 3-sample average in North and South regions.
+#' @return data frame with MWRA Covid-19 data samples wrangled for use in ggplot2.
 #' @export
 #'
-import_mwra_sewage_data <- function(mwra_sewage_pdf, covid_wastewater_file, latest_rda_file = paste0(Sys.getenv("COVID_DATA_DIR"), "sewage_data.Rdata"), api_key = Sys.getenv("pdftable_api")) {
+import_mwra_sewage_data <- function(mwra_sewage_file, api_key = Sys.getenv("pdftable_api")) {
 
-if(mwra_sewage_pdf != "none") {
-
-pdftables::convert_pdf(mwra_sewage_pdf, covid_wastewater_file, format = "xlsx-single")
+if(grepl("pdf$", mwra_sewage_file)) {
+  if (!requireNamespace("pdftables", quietly = TRUE)) {
+    stop("Package \"pdftables\" needed for this function to work on a PDF. Please install it or convert the PDF to an .xlsx file some other way.",
+         call. = FALSE)
+  }
+  pdftables::convert_pdf(mwra_sewage_file, covid_wastewater_file, format = "xlsx-single")
+  covid_wastewater_file <- stringr::str_replace(mwra_sewage_file, "pdf", "xlsx")
+} else {
+  covid_wastewater_file <- mwra_sewage_file
 }
 
+  check_columns <- readxl::read_xlsx(covid_wastewater_file, sheet = 1, n_max = 3)
+  new_names <- c("SampleDate", as.character(check_columns[1,2]), as.character(check_columns[1,3]) )
+  new_names <- stringr::str_replace_all(new_names, "ern", "")
+  for(i in 4:ncol(check_columns)) {
+    new_names[i] = paste0(names(check_columns[i]),check_columns[1, i] )
+    new_names[i] = stringr::str_replace_all(new_names[i], "ern", "")
+    new_names[i] = stringr::str_replace_all(new_names[i], " ", "")
+  }
+
+
   sewage <- suppressMessages(readxl::read_xlsx(covid_wastewater_file, sheet = 1, skip = 2) )
-  names(sewage) <- c("SampleDate", "South", "North", "South7sample", "North7sample", "South3sample", "North3sample")
+  # names(sewage) <- c("SampleDate", "South", "North", "South7sample", "North7sample", "South3sample", "North3sample")
+  names(sewage) <- new_names
 
   sewage$SampleDate <- suppressWarnings(lubridate::mdy(sewage$SampleDate))
-  sewage <- sewage %>%
-    dplyr::filter(!is.na(North) & !is.na(South) & !is.na(South7sample) & !is.na(North7sample) & !is.na(South3sample) & !is.na(North3sample))
+  sewage_long <- tidyr::gather(sewage, key = "Region", "DetectedCovid", 2:ncol(sewage)) %>%
+    dplyr::filter(!is.na(DetectedCovid)) %>%
+    dplyr::mutate(
+      SampleGroup = dplyr::case_when(
+        stringr::str_detect(Region, "3sample") ~ "3sample",
+        stringr::str_detect(Region, "7sample") ~ "7sample",
+        !(stringr::str_detect(Region, "sample")) ~ "eachsample"
+      )
+    )
 
-  south <- sewage[, c("SampleDate", "South3sample")]
-  south$Region <- "South"
-  names(south)[2] <- "Avg"
-  north <- sewage[, c("SampleDate", "North3sample")]
-  north$Region <- "North"
-  names(north)[2] <- "Avg"
-  sewage_3sample_data <- dplyr::bind_rows(south, north) %>%
-    dplyr::filter(!is.na(Avg))
+sample_groups <- unique(sewage_long$SampleGroup)
 
+my_results <- split(sewage_long , f = sewage_long$SampleGroup )
 
-
-
-  #### Daily ####
-
-  sewage_daily <- sewage
-
-  sewage_daily <- sewage_daily[, c("SampleDate", "North", "South")]
-  south <- sewage_daily[, c("SampleDate", "South")]
-  south$Region <- "South"
-  names(south)[2] <- "Avg"
-  north <- sewage_daily[, c("SampleDate", "North")]
-  north$Region <- "North"
-  names(north)[2] <- "Avg"
-  sewage_daily_data <- dplyr::bind_rows(south, north) %>%
-    dplyr::filter(!is.na(Avg))
-
-
-  save(sewage_3sample_data, sewage_daily_data, file = paste0(Sys.getenv("COVID_DATA_DIR"), "/sewage_data.Rdata") )
-  my_results <- list(sewage_3sample_data, sewage_daily_data)
-  names(my_results) <- c("sewage_3sample_data", "sewage_daily_data")
+my_results$sample_groups <- sample_groups
   return(my_results)
 }
