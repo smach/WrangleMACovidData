@@ -1,6 +1,6 @@
 Package: WrangleMACovidData
 Type: Package
-Title: Wrangle Covid-19 Data From Massachusetts Dept of Public Health
+Title: Wrangle Covid-19 Data From Massachusetts Dept of Public Health and MWRA
 Version: 0.5.0
 Author: Sharon Machlis
 Maintainer: Sharon Machlis <DoMoreWithR@machlis.com>
