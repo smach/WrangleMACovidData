@@ -4,12 +4,12 @@
 \alias{macovid_read_weekly_for_map}
 \title{Read weekly Mass Covid dashboard to join with shapefile for mapping}
 \usage{
-macovid_read_weekly_for_map(weekly_data_file)
+macovid_read_weekly_for_map(weekly_data_file, the_sheet = "City_town")
 }
 \arguments{
-\item{weekly_data_file}{Weekly Covid-19 spreadsheet from Mass Dept of Public Health}
+\item{weekly_data_file}{character string Weekly Covid-19 spreadsheet from Mass Dept of Public Health}
 
-\item{gis_data}{sf object available in this package}
+\item{the_sheet}{character string sheeet name for weekly file}
 }
 \value{
 sf object for use in making a Leaflet map

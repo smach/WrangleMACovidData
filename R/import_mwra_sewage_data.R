@@ -17,8 +17,8 @@ if(grepl("pdf$", mwra_sewage_file)) {
     stop("Package \"pdftables\" needed for this function to work on a PDF. Please install it or convert the PDF to an .xlsx file some other way.",
          call. = FALSE)
   }
+  covid_wastewater_file <- gsub(".pdf", ".xlsx", mwra_sewage_file, fixed = TRUE)
   pdftables::convert_pdf(mwra_sewage_file, covid_wastewater_file, format = "xlsx-single")
-  covid_wastewater_file <- stringr::str_replace(mwra_sewage_file, "pdf", "xlsx")
 } else {
   covid_wastewater_file <- mwra_sewage_file
 }

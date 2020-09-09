@@ -19,6 +19,29 @@ get_cases_category <- function(cases) {
 
 
 
+#' Convert vector of characters to integer or number if needed
+#'
+#' @param item string that needs to be converted
+#' @param thetype string "number" or "integer"
+#'
+#' @return
+#' @export
+#'
+
+fix_characters <- function(item, thetype = "number") {
+  if(thetype == "number") {
+    if(is.character(item)) {
+      item <- readr::parse_number(item)
+    }
+  } else if (thetype == "integer") {
+    if(is.character(item)) {
+      item <- readr::parse_integer(item)
+    }
+  }
+  return(item)
+}
+
+
 #' Get category color for test positivity rate based on my own scheme
 #'
 #' @param positivity numeric

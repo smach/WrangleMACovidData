@@ -5,20 +5,20 @@
 #'
 #' See vignette("make-map", package = "WrangleMACovidData") for more info
 #'
-#' @param weekly_data_file Weekly Covid-19 spreadsheet from Mass Dept of Public Health
-#' @param gis_data sf object available in this package
+#' @param weekly_data_file character string Weekly Covid-19 spreadsheet from Mass Dept of Public Health
+#' @param the_sheet character string sheeet name for weekly file
 #'
 #' @return sf object for use in making a Leaflet map
 #' @export
 #'
-macovid_read_weekly_for_map <- function(weekly_data_file) {
-  ma_data <- readxl::read_xlsx(weekly_data_file, sheet = "City_Town_Data")
+macovid_read_weekly_for_map <- function(weekly_data_file, the_sheet = "City_town") {
+  ma_data <- readxl::read_xlsx(weekly_data_file, sheet = the_sheet)
   gis_file <- system.file("extdata", "MA_shapefile/acs2018_5yr_B00001_06000US2502141515.shp", package = "WrangleMACovidData")
   ma_data <- ma_data %>%
     dplyr::mutate(
-      `Percent positivity` = suppressWarnings(readr::parse_number(`Percent positivity`) ),
-      `Total case count` = suppressWarnings(readr::parse_integer(`Total case count`) ),
-      `Two Week Case Count` = suppressWarnings(readr::parse_integer(`Two Week Case Count`) ),
+      `Percent positivity` = fix_characters(`Percent positivity`),
+      `Total case count` = fix_characters(`Total case count`, "integer"),
+      `Two Week Case Count` = fix_characters(`Two Week Case Count`, "integer" ),
       PositivityRate = round(`Percent positivity` * 100, 1),
       PositivityCategory = get_positivity_category(PositivityRate) ,
       DailyAvgCases = ifelse(`Average Daily Incidence Rate per 100000` == "<5", NA,
