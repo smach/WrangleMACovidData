@@ -20,7 +20,7 @@ graph_sewage_data <- function(mydf, mytitle = "") {
       ggplot2::xlab("") +
       ggplot2::ylab("RNA copies/mL") +
       ggplot2::theme_minimal() +
-      ggplot2::scale_x_date(date_breaks = "14 days", date_labels = "%b %e") +
+      ggplot2::scale_x_date(date_breaks = "28 days", date_labels = "%b %e") +
       ggplot2::labs(title = mytitle)
   )
 
