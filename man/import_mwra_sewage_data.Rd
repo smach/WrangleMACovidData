@@ -15,5 +15,5 @@ import_mwra_sewage_data(mwra_sewage_file, api_key = Sys.getenv("pdftable_api"))
 data frame with MWRA Covid-19 data samples wrangled for use in ggplot2.
 }
 \description{
-Data from http://www.mwra.com/biobot/biobotdata.htm. See mwra-data vignette for details. Auto conversion of PDF to .xlsx uses the pdftables API (not free).
+Data from http://www.mwra.com/biobot/biobotdata.htm. See mwra-data vignette for details. Auto conversion of PDF to .xlsx uses the pdftables API (not free). Updated for Nov 2020 format but does not use error bars.
 }

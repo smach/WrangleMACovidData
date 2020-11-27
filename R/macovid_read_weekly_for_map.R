@@ -13,16 +13,18 @@
 #'
 macovid_read_weekly_for_map <- function(weekly_data_file, the_sheet = "City_town") {
   ma_data <- readxl::read_xlsx(weekly_data_file, sheet = the_sheet)
+  names(ma_data) <- c("Place", "Cases", "CasesLast14Days", "AvgDailyPer100K", "RelativeChange", "TotalTested", "TotalTestedLast14Days", "TotalPositiveLast14Days", "PctPositive", "ChangePctPositivity")
+
   gis_file <- system.file("extdata", "MA_shapefile/acs2018_5yr_B00001_06000US2502141515.shp", package = "WrangleMACovidData")
   ma_data <- ma_data %>%
     dplyr::mutate(
-      `Percent positivity` = fix_characters(`Percent positivity`),
-      `Total case count` = fix_characters(`Total case count`, "integer"),
-      `Two Week Case Count` = fix_characters(`Two Week Case Count`, "integer" ),
+      `Percent positivity` = fix_characters(`PctPositive`),
+      `Total case count` = fix_characters(`Cases`, "integer"),
+      `Two Week Case Count` = fix_characters(`CasesLast14Days`, "integer" ),
       PositivityRate = round(`Percent positivity` * 100, 1),
       PositivityCategory = get_positivity_category(PositivityRate) ,
-      DailyAvgCases = ifelse(`Average Daily Incidence Rate per 100000` == "<5", NA,
-                             round(suppressWarnings(readr::parse_number(`Average Daily Incidence Rate per 100000`) ), 1)) ,
+      DailyAvgCases = ifelse(AvgDailyPer100K == "<5", NA,
+                             round(suppressWarnings(readr::parse_number(AvgDailyPer100K) ), 1)) ,
       CaseCategory = get_cases_category(DailyAvgCases),
       `Total case count` = as.vector(`Total case count`),
       `Two Week Case Count` = as.vector(`Two Week Case Count`),
