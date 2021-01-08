@@ -13,7 +13,9 @@
 #'
 macovid_read_weekly_for_map <- function(weekly_data_file, the_sheet = "City_town") {
   ma_data <- readxl::read_xlsx(weekly_data_file, sheet = the_sheet)
-  names(ma_data) <- c("Place", "Cases", "CasesLast14Days", "AvgDailyPer100K", "RelativeChange", "TotalTested", "TotalTestedLast14Days", "TotalPositiveLast14Days", "PctPositive", "ChangePctPositivity")
+#  names(ma_data) <- c("Place", "Cases", "CasesLast14Days", "AvgDailyPer100K", "RelativeChange", "TotalTested", "TotalTestedLast14Days", "TotalPositiveLast14Days", "PctPositive", "ChangePctPositivity")
+
+  names(ma_data) <- c("Place", "County", "Population", "Cases", "CasesLast14Days", "AvgDailyPer100K", "ChangeLastWeek", "TotalTested", "TotalTestedLast14Days", "TotalPositiveLast14Days", "PctPositive", "ChangePctPositivity", "TestingRate", "ReportDate", "StartDate", "EndDate")
 
   gis_file <- system.file("extdata", "MA_shapefile/acs2018_5yr_B00001_06000US2502141515.shp", package = "WrangleMACovidData")
   ma_data <- ma_data %>%
